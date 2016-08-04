@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ly.mybatis.dao.SysUserMapper">
+  <resultMap id="BaseResultMap" type="com.ly.mybatis.model.SysUser">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="sex" jdbcType="INTEGER" property="sex" />
+    <result column="user_type" jdbcType="INTEGER" property="userType" />
+    <result column="login_id" jdbcType="LONGVARCHAR" property="loginId" />
+    <result column="password" jdbcType="LONGVARCHAR" property="password" />
+    <result column="user_name" jdbcType="LONGVARCHAR" property="userName" />
+    <result column="email" jdbcType="LONGVARCHAR" property="email" />
+    <result column="phone" jdbcType="LONGVARCHAR" property="phone" />
+    <result column="remarks" jdbcType="LONGVARCHAR" property="remarks" />
+    <result column="salt" jdbcType="LONGVARCHAR" property="salt" />
+  </resultMap>
+    <select id="querySysUserList" parameterType="java.util.HashMap" resultType="java.util.Map">
+         select * from sys_user
+    </select>
+</mapper>

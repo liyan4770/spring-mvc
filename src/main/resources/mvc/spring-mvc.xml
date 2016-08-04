@@ -1,0 +1,113 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:beans="http://www.springframework.org/schema/util"
+	   xsi:schemaLocation="http://www.springframework.org/schema/mvc
+				http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+				http://www.springframework.org/schema/beans
+				http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+				http://www.springframework.org/schema/aop
+				http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+				http://www.springframework.org/schema/context
+				http://www.springframework.org/schema/context/spring-context-4.1.xsd
+				http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<!--<aop:aspectj-autoproxy proxy-target-class="true"/>-->
+	<!-- 自动扫描且只扫描@Controller @Service-->
+	<context:component-scan base-package="com.ly.module" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Component"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+	</context:component-scan>
+
+	<!-- Spring默认的json转换类 -->
+	<!--<mvc:annotation-driven>
+		<mvc:message-converters register-defaults="true">
+			&lt;!&ndash; 将StringHttpMessageConverter的默认编码设为UTF-8 &ndash;&gt;
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+		    	<constructor-arg value="UTF-8" />
+			</bean>
+  		</mvc:message-converters>
+	</mvc:annotation-driven>-->
+
+	<!-- 使用FastJaon的json转换类 -->
+	<mvc:annotation-driven>
+		<mvc:message-converters register-defaults="true">
+			<bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list>
+						<value>application/json;charset=UTF-8</value>
+						<value>text/html;charset=UTF-8</value><!-- 避免IE出现下载JSON文件的情况 -->
+					</list>
+				</property>
+				<property name="features">
+					<array>
+						<value>WriteMapNullValue</value>
+						<value>WriteNullStringAsEmpty</value>
+						<value>WriteDateUseDateFormat</value>
+						<!--
+						QuoteFieldNames 输出key时是否使用双引号,默认为true
+						WriteMapNullValue 是否输出值为null的字段,默认为false
+						WriteNullNumberAsZero 数值字段如果为null,输出为0,而非null
+						WriteNullListAsEmpty List字段如果为null,输出为[],而非null
+						WriteNullStringAsEmpty 字符类型字段如果为null,输出为"",而非null
+						WriteNullBooleanAsFalse Boolean字段如果为null,输出为false,而非null
+						其他配置属性，参考fastjson相关API文档
+						-->
+					</array>
+				</property>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+	<!-- Bean解析器,级别高于默认解析器,寻找bean对象进行二次处理 -->
+    <bean id="beanNameViewResolver"
+          class="org.springframework.web.servlet.view.BeanNameViewResolver">
+    </bean>
+
+    <!-- 定义JSP文件的位置 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+	<!-- 容器默认的DefaultServletHandler处理 所有静态内容与无RequestMapping处理的URL-->	
+	<mvc:default-servlet-handler/>
+	
+	<!-- 定义无需Controller的url<->view直接映射 -->
+	<mvc:view-controller path="/" view-name="redirect:/login"/>
+
+
+	<!--<mvc:interceptors>
+		&lt;!&ndash; 配置Token拦截器，防止用户重复提交数据 &ndash;&gt;
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<mvc:exclude-mapping path="/static/**/"/>
+			<bean class="com.watchme.wm.interceptor.TokenInterceptor"/>
+		</mvc:interceptor>
+	</mvc:interceptors>-->
+
+	<!-- 将Controller抛出的异常转到特定View, 保持SiteMesh的装饰效果 -->
+	<bean id="handlerExceptionResolver" class="com.ly.util.exception.MethodExceptionResolver">
+		<property name="defaultErrorView" value="error/500"/>
+		<property name="messageConverters">
+			<list>
+				<bean	class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
+				<!-- JSON转换器无需设置mediaType,由外部客户端调用时，手动设置相关mediaType -->
+				<bean	class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="multipartResolver"
+		  class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="defaultEncoding" value="UTF-8" /> <!-- 默认编码 (ISO-8859-1) -->
+		<property name="maxInMemorySize" value="10240" /> <!-- 最大内存大小 (10240) -->
+		<property name="uploadTempDir" value="/upload" /> <!-- 上传后的目录名 (WebUtils#TEMP_DIR_CONTEXT_ATTRIBUTE) -->
+		<property name="maxUploadSize" value="10485760" /> <!-- 最大文件大小，-1为无限止(-1) -->
+	</bean>
+
+</beans>

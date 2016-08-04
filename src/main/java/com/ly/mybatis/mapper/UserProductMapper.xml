@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ly.mybatis.dao.UserProductMapper" >
+  <resultMap id="BaseResultMap" type="com.ly.mybatis.model.UserProduct" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <result column="ID" property="id" jdbcType="INTEGER" />
+    <result column="PARENT_PROD_ID" property="parentProdId" jdbcType="INTEGER" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="PROD_NAME" property="prodName" jdbcType="LONGVARCHAR" />
+    <result column="PROD_TYPE" property="prodType" jdbcType="LONGVARCHAR" />
+    <result column="CREATE_USER" property="createUser" jdbcType="LONGVARCHAR" />
+    <result column="UPDATE_USER" property="updateUser" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+  <select id="queryUserProdList" parameterType="com.ly.util.tools.IMap" resultType="com.ly.util.tools.IMap">
+    SELECT ID,PARENT_PROD_ID,
+            DATE_FORMAT(create_date,'%Y-%m-%d %T') CREATE_DATE,
+            DATE_FORMAT(create_date,'%Y-%m-%d %T') UPDATE_DATE,
+            PROD_NAME,PROD_TYPE,CREATE_USER,UPDATE_USER
+      FROM user_product
+     WHERE 1=1
+    <if test="ID != null and ID != ''">
+      AND ID = #{ID}
+    </if>
+    <if test="PROD_NAME != null and PROD_NAME != ''">
+       AND PROD_NAME LIKE CONCAT('%',#{PROD_NAME},'%')
+    </if>
+    <if test="CREATE_USER != null and CREATE_USER != ''">
+      AND CREATE_USER = #{CREATE_USER}
+    </if>
+  </select>
+
+  <insert id="insertUserProd" parameterType="java.util.HashMap">
+    insert into user_product
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="ID != null and ID != '' ">
+        ID,
+      </if>
+      <if test="PROD_NAME != null and PROD_NAME != '' ">
+        PROD_NAME,
+      </if>
+      <if test="PROD_TYPE != null and PROD_TYPE != '' ">
+        PROD_TYPE,
+      </if>
+      <if test="CREATE_USER != null and CREATE_USER != '' ">
+        CREATE_USER,
+      </if>
+      <if test="UPDATE_USER != null and UPDATE_USER != '' ">
+        UPDATE_USER,
+      </if>
+      <if test="PARENT_PROD_ID != null and PARENT_PROD_ID != '' ">
+        PARENT_PROD_ID,
+      </if>
+      <if test="CREATE_DATE != null ">
+        CREATE_DATE,
+      </if>
+      <if test="UPDATE_DATE != null ">
+        UPDATE_DATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="ID != null and ID != '' ">
+        #{ID,jdbcType=VARCHAR},
+      </if>
+      <if test="PROD_NAME != null and PROD_NAME != '' ">
+        #{PROD_NAME,jdbcType=VARCHAR},
+      </if>
+      <if test="PROD_TYPE != null and PROD_TYPE != '' ">
+        #{PROD_TYPE,jdbcType=VARCHAR},
+      </if>
+      <if test="CREATE_USER != null and CREATE_USER != '' ">
+        #{CREATE_USER,jdbcType=VARCHAR},
+      </if>
+      <if test="UPDATE_USER != null and UPDATE_USER != '' ">
+        #{UPDATE_USER,jdbcType=VARCHAR},
+      </if>
+      <if test="PARENT_PROD_ID != null and PARENT_PROD_ID != '' ">
+        #{PARENT_PROD_ID,jdbcType=VARCHAR},
+      </if>
+      <if test="CREATE_DATE != null  ">
+        #{CREATE_DATE,jdbcType=TIMESTAMP},
+      </if>
+      <if test="UPDATE_DATE != null  ">
+        #{UPDATE_DATE,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+
+  <update id="updateUserProd" parameterType="java.util.HashMap">
+    UPDATE user_product
+    <trim prefix="set" suffix="" suffixOverrides="," >
+      <if test="PROD_NAME != null and PROD_NAME != '' ">
+        PROD_NAME = #{PROD_NAME,jdbcType=VARCHAR},
+      </if>
+      <if test="PROD_TYPE != null and PROD_TYPE != '' ">
+        PROD_TYPE = #{PROD_TYPE,jdbcType=VARCHAR},
+      </if>
+      <if test="CREATE_USER != null and CREATE_USER != '' ">
+        CREATE_USER = #{CREATE_USER,jdbcType=VARCHAR},
+      </if>
+      <if test="UPDATE_USER != null and UPDATE_USER != '' ">
+        UPDATE_USER = #{UPDATE_USER,jdbcType=VARCHAR},
+      </if>
+      <if test="PARENT_PROD_ID != null and PARENT_PROD_ID != '' ">
+        PARENT_PROD_ID = #{PARENT_PROD_ID,jdbcType=VARCHAR},
+      </if>
+      <if test="CREATE_DATE != null  ">
+        CREATE_DATE = #{CREATE_DATE,jdbcType=TIMESTAMP},
+      </if>
+      <if test="UPDATE_DATE != null  ">
+        UPDATE_DATE = #{UPDATE_DATE,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+    WHERE 1 = 1
+      AND ID = #{ID,jdbcType=VARCHAR}
+  </update>
+
+  <delete id="deleteUserProd" parameterType="java.util.HashMap">
+    delete from user_product
+    WHERE 1 = 1
+      AND ID = #{ID,jdbcType=VARCHAR}
+  </delete>
+
+</mapper>
